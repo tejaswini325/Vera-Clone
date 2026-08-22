@@ -175,7 +175,8 @@ def _call_groq(system: str, prompt: str) -> str:
         },
         timeout=25,
     )
-    resp.raise_for_status()
+    if resp.status_code >= 400:
+        raise RuntimeError(f"Groq {resp.status_code}: {resp.text[:300]}")
     return resp.json()["choices"][0]["message"]["content"]
 
 
